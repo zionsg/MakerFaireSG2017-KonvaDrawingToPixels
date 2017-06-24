@@ -46,7 +46,7 @@ $cellsPerColumn = $config['cells_per_column'];
 
           // Setup tools
           var $tools = $('#tools');
-          $.each(['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff'], function() {
+          $.each(['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff'], function () {
               $tools.append(utils.sprintf(
                   '<a href="#canvas" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
                   this,
@@ -134,7 +134,7 @@ $cellsPerColumn = $config['cells_per_column'];
           }
 
           // For performance, adding 2 event listeners on 1 element rather than 2 listeners for each cell
-          canvas.on('touchstart touchmove', function() {
+          canvas.on('touchstart touchmove', function () {
               var touchPos = stage.getPointerPosition();
               var x = touchPos.x;
               var y = touchPos.y;
