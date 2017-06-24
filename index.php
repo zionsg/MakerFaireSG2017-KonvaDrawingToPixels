@@ -42,10 +42,11 @@ $cellsPerColumn = $config['cells_per_column'];
           var cellCnt = 0;
           var initialColor = '#c0c0c0';
           var currColor = '#0000ff';
+          var cell;
 
           // Setup tools
           var $tools = $('#tools');
-          $.each(['#f00', '#ff0', '#0f0', '#0ff', '#00f', '#f0f', '#000', '#fff'], function() {
+          $.each(['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff'], function() {
               $tools.append(utils.sprintf(
                   '<a href="#canvas" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
                   this,
@@ -60,9 +61,16 @@ $cellsPerColumn = $config['cells_per_column'];
               e.preventDefault();
 
               var data = [];
-              cells.forEach(function (element, index, array) {
-                  data.push(element.konvaCell.getFill());
-              });
+              for (var row = 0; row < cellsPerColumn; row++) {
+                  var set = [];
+
+                  for (var col = 0; col < cellsPerRow; col++) {
+                      cell = cells[(row * cellsPerRow) + col];
+                      set.push(cell.konvaCell.getFill());
+                  }
+
+                  data.push(set);
+              }
 
               utils.sendDrawing(data, function (isSuccess, statusCode, responseData) {
                   alert('Drawing sent!');
@@ -126,7 +134,6 @@ $cellsPerColumn = $config['cells_per_column'];
           }
 
           // For performance, adding 2 event listeners on 1 element rather than 2 listeners for each cell
-          var cell, color;
           canvas.on('touchstart touchmove', function() {
               var touchPos = stage.getPointerPosition();
               var x = touchPos.x;
@@ -138,7 +145,6 @@ $cellsPerColumn = $config['cells_per_column'];
               cell = cells[(row * cellsPerRow) + col];
 
               // Color cell
-              color = utils.getRandomColor();
               cell.konvaCell.fill(currColor);
               layer.draw();
           });

@@ -5,7 +5,7 @@ namespace App;
 /**
  * @api {post} /app Submit drawing
  *
- * @apiParam {array} cells Array of color codes for each cell
+ * @apiParam {array} cells Array of color codes for each cell, row by row
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -23,10 +23,14 @@ namespace App;
 class Application
 {
     protected $endpointUrl;
+    protected $cellsPerRow;
+    protected $cellsPerColumn;
 
     public function __construct(array $config)
     {
         $this->endpointUrl = $config['endpoint_url'];
+        $this->cellsPerRow = $config['cells_per_row'];
+        $this->cellsPerColumn = $config['cells_per_column'];
     }
 
     /**
@@ -37,10 +41,11 @@ class Application
     public function run()
     {
         // Get colors of cells from POST request param
-        $cells = isset($_POST['cells']) ? $_POST['cells'] : '';
-        if (! $cells) {
+        $cells = isset($_POST['cells']) ? $_POST['cells'] : [];
+
+        if (! $cells || ! is_array($cells)) {
             return $this->response([
-                'grid' => []
+                'grid' => [],
             ]);
         }
 
@@ -49,30 +54,20 @@ class Application
         //     01  04  05
         //     02  03  06
         $grid = [];
-        for ($x = 0; $x < $this->gridWidth; $x++) {
-            $column = [];
+        for ($col = 0; $col < $this->cellsPerRow; $col++) {
+            $colInfo = [];
 
-            for ($y = 0; $y < $this->gridHeight; $y++) {
-                $rgb = imagecolorat($resizedImage, $x, $y);
-                $r = ($rgb >> 16) & 0xFF;
-                $g = ($rgb >> 8) & 0xFF;
-                $b = $rgb & 0xFF;
+            for ($row = 0; $row < $this->cellsPerColumn; $row++) {
+                $cell = $cells[$row][$col];
 
-                $cell = sprintf(
-                    '#%s%s%s',
-                    $this->decToHex($r),
-                    $this->decToHex($g),
-                    $this->decToHex($b)
-                );
-
-                if (0 === ($x % 2)) {
-                    $column[] = $cell;
+                if (0 === ($col % 2)) {
+                    $colInfo[] = $cell;
                 } else {
-                    array_unshift($column, $cell);
+                    array_unshift($colInfo, $cell);
                 }
             }
 
-            $grid[] = implode(',', $column);
+            $grid[] = implode(',', $colInfo);
         }
 
         // Send data to external API
