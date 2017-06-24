@@ -41,7 +41,7 @@ $cellsPerColumn = $config['cells_per_column'];
           var cells = [];
           var cellCnt = 0;
           var initialColor = '#c0c0c0';
-          var currColor = initialColor;
+          var currColor = '#0000ff';
 
           // Setup tools
           var $tools = $('#tools');
