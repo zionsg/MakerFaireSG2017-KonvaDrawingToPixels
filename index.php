@@ -48,7 +48,7 @@ $cellsPerColumn = $config['cells_per_column'];
           var $tools = $('#tools');
           $.each(['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff'], function () {
               $tools.append(utils.sprintf(
-                  '<a href="#canvas" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
+                  '<a href="#" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
                   this,
                   this
               ));
