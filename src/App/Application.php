@@ -10,8 +10,8 @@ namespace App;
  *     HTTP/1.1 200 OK
  *     {
  *       "grid": [
- *         ["#ff0000", "#00ff00"],
- *         ["#0000ff", "#ffffff"]
+ *         "#ff0000,#00ff00",
+ *         "#0000ff,#ffffff"
  *       ],
  *       "api_call": {
  *         "code": 200,
@@ -49,25 +49,25 @@ class Application
             ]);
         }
 
-        // Sending to external API column by column, with even columns reversed
+        // Sending to external API column by column, with even rows reversed
         // LED board is wired as follows for a 3 x 2 grid:
-        //     01  04  05
-        //     02  03  06
+        //     01  02  03
+        //     06  05  04
         $grid = [];
-        for ($col = 0; $col < $this->cellsPerRow; $col++) {
-            $colInfo = [];
+        for ($row = 0; $row < $this->cellsPerColumn; $row++) {
+            $rowInfo = [];
 
-            for ($row = 0; $row < $this->cellsPerColumn; $row++) {
+            for ($col = 0; $col < $this->cellsPerRow; $col++) {
                 $cell = $cells[$row][$col];
 
-                if (0 === ($col % 2)) {
-                    $colInfo[] = $cell;
+                if (0 === ($row % 2)) {
+                    $rowInfo[] = $cell;
                 } else {
-                    array_unshift($colInfo, $cell);
+                    array_unshift($rowInfo, $cell);
                 }
             }
 
-            $grid[] = implode(',', $colInfo);
+            $grid[] = implode(',', $rowInfo);
         }
 
         // Send data to external API
