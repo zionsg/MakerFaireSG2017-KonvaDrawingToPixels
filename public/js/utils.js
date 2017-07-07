@@ -6,22 +6,40 @@ var utils = (function () {
     // Self reference - all public vars/methods will be stored in here and returned as public interface
     var self = {};
 
-    var endpointUrl = 'app/';
-
     /**
      * Send drawing to endpoint
      *
+     * @param  object config
      * @param  string imageDataUri
      * @param  callable responseCallback Takes in (isSuccess, statusCode, responseData) and returns void
      * @return void
      */
-    self.sendDrawing = function (cells, responseCallback) {
+    self.sendDrawing = function (config, cells, responseCallback) {
+        var grid = [];
+        for (row = 0; row < config.cellsPerColumn; row++) {
+            var rowInfo = [];
+
+            for (col = 0; col < config.cellsPerRow; col++) {
+                cell = cells[row][col];
+
+                if (0 === (row % 2)) {
+                    rowInfo.push(cell);
+                } else {
+                    rowInfo.unshift(cell);
+                }
+            }
+
+            grid.push(rowInfo.join());
+        }
+        console.log(grid);
+
         $.ajax({
             type: 'POST',
-            dataType: 'json',
-            url: endpointUrl,
+            contentType: 'application/x-www-form-urlencoded; charset=utf-8', // Arduino board set to this content type
+            dataType: 'text',
+            url: config.endpointUrl,
             data: {
-                cells: cells
+                data: grid
             }
         }).done(function (data, textStatus, jqXHR) {
             var isSuccess = true,
@@ -38,22 +56,6 @@ var utils = (function () {
             console.log(statusCode, responseData);
             responseCallback(isSuccess, statusCode, responseData);
         });
-    };
-
-    /**
-     * Get random color
-     *
-     * @return string Hexadecimal code for color including leading #
-     */
-    self.getRandomColor = function () {
-        var letters = '0123456789ABCDEF';
-        var result = '#';
-
-        for (var i = 0; i < 6; i++) {
-            result += letters[Math.floor(Math.random() * 16)];
-        }
-
-        return result;
     };
 
     /**
