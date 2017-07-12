@@ -15,10 +15,15 @@
   </head>
 
   <body>
+    <img class="img-responsive title" src="public/images/title.png" /><br>
+    <img class="img-responsive title" src="public/images/instructions.png" />
+
     <div id="tools">
-      <a id="submit" href="#">&check;</a>
-      <a id="clear" href="#">&cross;</a>
+      <a href="#" class="tool rainbow-btn" data-color="#000000">&nbsp;</a>
+      <img id="all-white" class="tool tool-image" src="public/images/all-white-btn.png" />
+      <img id="clear" class="tool tool-image" src="public/images/reset-btn.png" />
     </div>
+    <img id="submit" class="img-responsive" src="public/images/submit-btn.png" /><br><br>
 
     <div id='stage'></div>
 
@@ -35,14 +40,15 @@
           var canvasHeight = cellsPerColumn * cellWidth;
           var cells = [];
           var cellCnt = 0;
+          var colors = ['#ffffff', '#00ffff', '#00ff00', '#ffff00', '#ff0000', '#ff00ff', '#0000ff', '#c0c0c0'];
           var initialColor = '#c0c0c0';
-          var currColor = '#0000ff';
+          var currColor = colors[1];
           var cell;
 
           // Setup tools
           var $tools = $('#tools');
-          $.each(['#ff0000', '#ffff00', '#00ff00', '#00ffff', '#0000ff', '#ff00ff', '#000000', '#ffffff'], function () {
-              $tools.append(utils.sprintf(
+          $.each(colors.reverse(), function () {
+              $tools.prepend(utils.sprintf(
                   '<a href="#" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
                   this,
                   this
@@ -76,6 +82,14 @@
 
               for (var i = 0; i < cellCnt; i++) {
                   cells[i].konvaCell.fill('#c0c0c0');
+              }
+              layer.draw();
+          });
+          $('#all-white').click(function (e) {
+              e.preventDefault();
+
+              for (var i = 0; i < cellCnt; i++) {
+                  cells[i].konvaCell.fill('#ffffff');
               }
               layer.draw();
           });
