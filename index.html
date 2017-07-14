@@ -19,7 +19,7 @@
     <img class="img-responsive title" src="public/images/instructions.png" />
 
     <div id="tools">
-      <a href="#" class="tool rainbow-btn" data-color="#000000">&nbsp;</a>
+      <a href="#" class="tool color-tool rainbow" data-color="rainbow">&nbsp;</a>
       <img id="all-white" class="tool tool-image" src="public/images/all-white-btn.png" />
       <img id="clear" class="tool tool-image" src="public/images/reset-btn.png" />
     </div>
@@ -41,22 +41,28 @@
           var cells = [];
           var cellCnt = 0;
           var colors = ['#ffffff', '#00ffff', '#00ff00', '#ffff00', '#ff0000', '#ff00ff', '#0000ff', '#c0c0c0'];
+          var colorCnt = colors.length;
           var initialColor = '#c0c0c0';
-          var currColor = colors[1];
+          var defaultColorIndex = 1;
+          var currColor = colors[defaultColorIndex];
           var cell;
 
           // Setup tools
           var $tools = $('#tools');
-          $.each(colors.reverse(), function () {
+          $.each(colors.slice().reverse(), function (index) { // slice makes a copy of the array cos reverse mutates it
               $tools.prepend(utils.sprintf(
-                  '<a href="#" class="tool" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
+                  '<a href="#" class="tool color-tool%s" data-color="%s" style="background-color:%s;">&nbsp;</a> ',
+                  (index === colorCnt - defaultColorIndex - 1) ? ' selected' : '',
                   this,
                   this
               ));
           });
           $('.tool').click(function (e) {
               e.preventDefault();
+
               currColor = $(this).attr('data-color');
+              $('.tool').removeClass('selected');
+              $(this).addClass('selected');
           });
           $('#submit').click(function (e) {
               e.preventDefault();
@@ -67,7 +73,11 @@
 
                   for (var col = 0; col < cellsPerRow; col++) {
                       cell = cells[(row * cellsPerRow) + col];
-                      set.push(cell.konvaCell.getFill());
+                      if ('linear-gradient' === cell.konvaCell.getFillPriority()) {
+                          set.push('#000000');
+                      } else {
+                          set.push(cell.konvaCell.getFill());
+                      }
                   }
 
                   data.push(set);
@@ -79,16 +89,20 @@
           });
           $('#clear').click(function (e) {
               e.preventDefault();
+              currColor = colors[defaultColorIndex];
 
               for (var i = 0; i < cellCnt; i++) {
+                  cells[i].konvaCell.fillPriority('color');
                   cells[i].konvaCell.fill('#c0c0c0');
               }
               layer.draw();
           });
           $('#all-white').click(function (e) {
               e.preventDefault();
+              currColor = colors[defaultColorIndex];
 
               for (var i = 0; i < cellCnt; i++) {
+                  cells[i].konvaCell.fillPriority('color');
                   cells[i].konvaCell.fill('#ffffff');
               }
               layer.draw();
@@ -125,9 +139,14 @@
                       y: cellY,
                       width: cellWidth,
                       height: cellWidth,
+                      fillPriority: 'color', // to switch between solid color fill and linear gradient fill
                       fill: initialColor,
+                      // Linear gradient hardcoded to rainbow
+                      fillLinearGradientStartPoint: { x : 0, y : 0},
+                      fillLinearGradientEndPoint: { x : cellWidth, y : cellWidth},
+                      fillLinearGradientColorStops: [0, '#00a8de', 0.2, '#333391', 0.4, '#e91388', 0.6, '#eb2d2e', 0.8, '#fde92b', 1, '#009e54'],
                       stroke: 'black',
-                      strokeWidth: 1
+                      strokeWidth: 1,
                   });
 
                   layer.add(cell);
@@ -154,7 +173,12 @@
               cell = cells[(row * cellsPerRow) + col];
 
               // Color cell
-              cell.konvaCell.fill(currColor);
+              if ('rainbow' === currColor) {
+                  cell.konvaCell.fillPriority('linear-gradient');
+              } else {
+                  cell.konvaCell.fillPriority('color');
+                  cell.konvaCell.fill(currColor);
+              }
               layer.draw();
           });
 
