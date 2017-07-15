@@ -55,7 +55,7 @@ var utils = (function () {
             dataType: 'text',
             url: config.endpointUrl,
             data: {
-                data: grid
+                data: grid.join()
             }
         }).done(function (data, textStatus, jqXHR) {
             var isSuccess = true,
