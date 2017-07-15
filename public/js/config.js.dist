@@ -6,6 +6,7 @@ var config = (function () {
     // Self reference - all public vars/methods will be stored in here and returned as public interface
     var self = {
         endpointUrl: 'http://127.0.0.1/test_endpoint.php',
+        isFirstRowLeftToRight: true, // affects how data is sent to endpoint
         cellWidth: 60,
         cellsPerRow: 11,
         cellsPerColumn: 6

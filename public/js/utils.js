@@ -9,6 +9,14 @@ var utils = (function () {
     /**
      * Send drawing to endpoint
      *
+     * Layout of LED wall if config.isFirstRowLeftToRight = true
+     *   1  2  3
+     *   6  5  4
+     *
+     * Layout of LED wall if config.isFirstRowLeftToRight = false
+     *   3  2  1
+     *   4  5  6
+     *
      * @param  object config
      * @param  string imageDataUri
      * @param  callable responseCallback Takes in (isSuccess, statusCode, responseData) and returns void
@@ -22,10 +30,18 @@ var utils = (function () {
             for (col = 0; col < config.cellsPerRow; col++) {
                 cell = cells[row][col];
 
-                if (0 === (row % 2)) {
-                    rowInfo.push(cell);
+                if (config.isFirstRowLeftToRight) {
+                    if (0 === (row % 2)) {
+                        rowInfo.push(cell);
+                    } else {
+                        rowInfo.unshift(cell);
+                    }
                 } else {
-                    rowInfo.unshift(cell);
+                    if (0 === (row % 2)) {
+                        rowInfo.unshift(cell);
+                    } else {
+                        rowInfo.push(cell);
+                    }
                 }
             }
 
