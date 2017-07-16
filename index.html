@@ -19,7 +19,7 @@
     <img class="img-responsive title" src="public/images/instructions.png" />
 
     <div id="tools">
-      <a href="#" class="tool color-tool rainbow" data-color="rainbow">&nbsp;</a>
+      <a href="#" class="tool color-tool rainbow" data-color="#777777">&nbsp;</a>
       <img id="all-white" class="tool tool-image" src="public/images/all-white-btn.png" />
       <img id="clear" class="tool tool-image" src="public/images/reset-btn.png" />
     </div>
@@ -33,6 +33,10 @@
     <script src="public/js/utils.js"></script>
     <script>
       $(function () {
+          var COLOR_RAINBOW = config.COLOR_RAINBOW;
+          var COLOR_BLANK_VALUE = config.COLOR_BLANK_VALUE;
+          var COLOR_BLANK_DISPLAY = config.COLOR_BLANK_DISPLAY;
+
           var cellWidth = config.cellWidth;
           var cellsPerRow = config.cellsPerRow;
           var cellsPerColumn = config.cellsPerColumn;
@@ -42,7 +46,6 @@
           var cellCnt = 0;
           var colors = ['#ffffff', '#00ffff', '#00ff00', '#ffff00', '#ff0000', '#ff00ff', '#0000ff', '#c0c0c0'];
           var colorCnt = colors.length;
-          var initialColor = '#c0c0c0';
           var defaultColorIndex = 1;
           var currColor = colors[defaultColorIndex];
           var cell;
@@ -73,11 +76,7 @@
 
                   for (var col = 0; col < cellsPerRow; col++) {
                       cell = cells[(row * cellsPerRow) + col];
-                      if ('linear-gradient' === cell.konvaCell.getFillPriority()) {
-                          set.push('#000000');
-                      } else {
-                          set.push(cell.konvaCell.getFill());
-                      }
+                      set.push(cell.konvaCell.getFill());
                   }
 
                   data.push(set);
@@ -93,7 +92,7 @@
 
               for (var i = 0; i < cellCnt; i++) {
                   cells[i].konvaCell.fillPriority('color');
-                  cells[i].konvaCell.fill('#c0c0c0');
+                  cells[i].konvaCell.fill(COLOR_BLANK_DISPLAY);
               }
               layer.draw();
           });
@@ -140,7 +139,7 @@
                       width: cellWidth,
                       height: cellWidth,
                       fillPriority: 'color', // to switch between solid color fill and linear gradient fill
-                      fill: initialColor,
+                      fill: COLOR_BLANK_DISPLAY,
                       // Linear gradient hardcoded to rainbow
                       fillLinearGradientStartPoint: { x : 0, y : 0},
                       fillLinearGradientEndPoint: { x : cellWidth, y : cellWidth},
@@ -173,11 +172,11 @@
               cell = cells[(row * cellsPerRow) + col];
 
               // Color cell
-              if ('rainbow' === currColor) {
+              cell.konvaCell.fill(currColor);
+              if (COLOR_RAINBOW === currColor) {
                   cell.konvaCell.fillPriority('linear-gradient');
               } else {
                   cell.konvaCell.fillPriority('color');
-                  cell.konvaCell.fill(currColor);
               }
               layer.draw();
           });

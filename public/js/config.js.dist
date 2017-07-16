@@ -9,7 +9,12 @@ var config = (function () {
         isFirstRowLeftToRight: true, // affects how data is sent to endpoint
         cellWidth: 60,
         cellsPerRow: 11,
-        cellsPerColumn: 6
+        cellsPerColumn: 6,
+
+        // Color constants
+        COLOR_RAINBOW: '#777777',
+        COLOR_BLANK_VALUE: '#000000',
+        COLOR_BLANK_DISPLAY: '#c0c0c0'
     };
 
     // Return public interface

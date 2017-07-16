@@ -30,6 +30,11 @@ var utils = (function () {
             for (col = 0; col < config.cellsPerRow; col++) {
                 cell = cells[row][col];
 
+                // Blank cell shows as gray on screen but send black to endpoint
+                if (config.COLOR_BLANK_DISPLAY === cell) {
+                    cell = config.COLOR_BLANK_VALUE;
+                }
+
                 if (config.isFirstRowLeftToRight) {
                     if (0 === (row % 2)) {
                         rowInfo.push(cell);
