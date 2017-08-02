@@ -1,5 +1,7 @@
 # MakerFaire SG 2017 - Konva Drawing To Pixels
 
+This web app is copied to and run off from an Android tablet, allowing users to color cells in the browser and send it to the NeoPixel LED matrix of the Interactive Wall.
+
 ## Requirements
 - [Yarn](https://yarnpkg.com/)
 
